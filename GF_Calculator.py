@@ -1,19 +1,25 @@
-def bin_mul(A,B,P):
-	b = bin(B)
-	p = bin(P)
+def bin_mul(a,b,P,p):
 	c = 0
-	for n in b:
-		if int(n) == 1:
-		c = c^(A<<(len(b)-1))
-	
+	for i in range(0,len(P)-1):
+		if pow(2,i)&b:
+			c = c^(a<<i)
+	i = 1
+	while c >= pow(2,len(P)-1):
+		if c&pow(2,2*(len(P)-1)-i):
+			c = c^(p<<len(P)-1-i)
+		i = i + 1
 	return c
 
 def add_sub(A, B):
-	C = [int(n) for n in A]
-	i = len(A) - len(B)
-	for n in B:
-		C[i] = C[i]^n
-		i = i + 1
+	C = [0 for n in range(0,max(len(A),len(B)))]
+	for n in range(1,len(C)+1):
+		if len(A)-n >= 0:
+			C[len(C)-n] = C[len(C)-n]^A[len(A)-n]
+			print("A: "+ str(A[len(A)-n]))
+		if len(B)-n >= 0:
+			C[len(C)-n] = C[len(C)-n]^B[len(B)-n]
+			print("B: "+ str(B[len(B)-n]))
+		print("C: " + str(C[len(C)-n]))
 	func = "A(x) + B(x) = "
 	i = 1
 	for n in C:
@@ -23,15 +29,18 @@ def add_sub(A, B):
 			func = func + " + "
 		i = i + 1
 	print(func)
-def mul(A, B, p):
-	C = [0 for n in range(0,len(A) + len(B))]
+
+def mul(A, B, P, p):
+	C = [0 for n in range(0,(len(A) + len(B)) - 1)]
 	i = 0
 	for m in B:
 		j = i
 		for n in A:
-			temp = bin_mul(m,n,p)
+			temp = bin_mul(m,n,P,p)
 			C[j] = C[j]^temp
+			j = j + 1
 		i = i + 1
+	print(C)
 	func = "A(x) x B(x) = "
 	i = 1
 	for n in C:
@@ -108,19 +117,20 @@ while (True):
 		print("[4] Division")
 		print("[5] New input/Exit")
 		
-		choice = int(raw_input("Enter choice number: "))
+		choice = raw_input("Enter choice number: ")
 		print("\n")
-		if choice == 1:
+		if choice == "1":
 			print("Addition:")
 			add_sub(A_x,B_x)
-		elif choice == 2:
+		elif choice == "2":
 			print("Subtraction")
 			add_sub(A_x,B_x)
-		elif choice == 3:
+		elif choice == "3":
 			print("Multiplication:")
-		elif choice == 4:
+			mul(A_x, B_x, P_x, p)
+		elif choice == "4":
 			print("Division")
-		elif choice == 5:
+		elif choice == "5":
 			break
 		else:
 			continue
