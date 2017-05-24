@@ -1,4 +1,4 @@
-def bin_mul(a,b,P,p):
+def bin_mul(a,b,P,p): # MULTIPLICATION
 	c = 0
 	for i in range(0,len(P)-1):
 		if pow(2,i)&b:
@@ -10,7 +10,7 @@ def bin_mul(a,b,P,p):
 		i = i + 1
 	return c
 
-def add_sub(A, B):
+def add_sub(A, B): # POLYNOMIAL ADDITION AND SUBTRACTION
 	C = [0 for n in range(0,max(len(A),len(B)))]
 	for n in range(1,len(C)+1):
 		temp = ""
@@ -27,17 +27,9 @@ def add_sub(A, B):
 			temp = temp + "0x^" + str(n-1)
 		temp = temp + " = " + str(C[len(C)-n]) + "x^" + str(n-1)
 		print(temp)
-	func = "A(x) + B(x) = "
-	i = 1
-	for n in C:
-		temp = str(n) + "x^"+ str(len(C) - i)
-		func = func + temp
-		if i < len(C):
-			func = func + " + "
-		i = i + 1
-	print(func)
+	return(C)
 
-def mul(A, B, P, p):
+def mul(A, B, P, p): # POLYNOMIAL MULTIPLICATION
 	C = [0 for n in range(0,(len(A) + len(B)) - 1)]
 	i = 0
 	for m in B:
@@ -48,18 +40,20 @@ def mul(A, B, P, p):
 			j = j + 1
 		i = i + 1
 	return(C)
-def div(A, B, P, p):
+def div(A, B, P, p): # POLYNOMIAL DIVISION
+	R_Temp = [n for n in A]
 	C = []
-	a = [n for n in range(0,(len(A))]
-	r = []
-	while True:
-		for i in range(0,p):
-			c = bin_mul(i,B[0])
-			if c == a[0]:
+	while len(R_Temp) >= len(B):
+		for i in range (0,p):
+			if bin_mul(B[0],i,P,p) == R_Temp[0]:
+				C.append(i)
 				break
-		C.append[c]
-		while len(C)
-
+		C_Temp = [bin_mul(i,B[j],P,p) for j in range (0,len(B))]
+		while len(R_Temp) > len(C_Temp):
+			C_Temp.append(0)
+		R_Temp = add_sub(C_Temp,R_Temp)
+		R_Temp.pop(0)
+	return(C,R_Temp)
 
 while (True):
 	not_valid = False
@@ -68,7 +62,7 @@ while (True):
 	B_x = [int(n) for n in raw_input("B(x): ").split()]
 	P_x = [int(n) for n in raw_input("P(x): ").split()]
 
-	print("You entered:")
+	print("You entered:") # DATA VALIDATION
 	func = "A(x) = "
 	i = 1
 	for n in A_x:
@@ -130,29 +124,41 @@ while (True):
 		choice = raw_input("Enter choice number: ")
 		if choice == "1":
 			print("Addition:")
-			add_sub(A_x,B_x)
+			C = add_sub(A_x,B_x)
+			func = "A(x) + B(x) = "
 		elif choice == "2":
 			print("Subtraction is the same as addition:")
-			add_sub(A_x,B_x)
+			C = add_sub(A_x,B_x)
+			func = "A(x) - B(x) = "
 		elif choice == "3":
 			print("Multiplication:")
 			C = mul(A_x, B_x, P_x, p)
-			func = "A(x) x B(x) = "
-			i = 1
-			for n in C:
-				temp = str(n) + "x^"+ str(len(C) - i)
-				func = func + temp
-				if i < len(C):
-					func = func + " + "
-				i = i + 1
-			print(func)
+			func = "A(x) * B(x) = "
 		elif choice == "4":
 			print("Division")
-			mul(A_x, B_x, P_x, p)
+			C,r = div(A_x, B_x, P_x, p)
+			func = "A(x) / B(x) = "
+			rem = "Remainder:"
+			i = 1
+			for n in r:
+				temp = str(n) + "x^"+ str(len(r) - i)
+				rem = rem + temp
+				if i < len(r):
+					rem = rem + " + "
+				i = i + 1
+			print(rem)
 		elif choice == "5":
 			break
 		else:
 			continue
+		i = 1
+		for n in C:
+			temp = str(n) + "x^"+ str(len(C) - i)
+			func = func + temp
+			if i < len(C):
+				func = func + " + "
+			i = i + 1
+		print(func)
 
 	print("New input?")
 	again = raw_input("[Y/y] to enter new inputs, [Enter] to exit: ")
