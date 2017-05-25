@@ -15,9 +15,9 @@ def add_sub(A, B, choice): # POLYNOMIAL ADDITION AND SUBTRACTION
 	str_B = ""
 	str_C = ""
 	if choice == 1:
-		line = "+"
+		line = "+\t"
 	if choice == 2:
-		line = "-"
+		line = "-\t"
 	C = [0 for n in range(0,max(len(A),len(B)))]
 	for n in range(1,len(C)+1):
 		if len(A)-n >= 0:
@@ -31,7 +31,7 @@ def add_sub(A, B, choice): # POLYNOMIAL ADDITION AND SUBTRACTION
 		else:
 			str_B = "\t " + str_B
 		str_C = "\t" + str(C[len(C)-n]) + str_C
-		line = line + "\t_______"
+		line = line + "_______\t"
 	print(str_A)
 	print(str_B)
 	print(line)
@@ -40,33 +40,36 @@ def add_sub(A, B, choice): # POLYNOMIAL ADDITION AND SUBTRACTION
 
 def mul(A, B, P, p): # POLYNOMIAL MULTIPLICATION
 	C = [0 for n in range(0,(len(A) + len(B)) - 1)]
+	str_A = ""
+	for n in A:
+		str_A = str_A + " " + str(n)
 	i = 0
-	for m in B:
-		j = i
-		print(str(m) + " x " + str(A) + ":")
+	for i in range(0,len(B)):
+		j = len(B)-i-1
+		print(str(B[len(B)-i-1]) + " x " + str_A + ":")
 		c = [0 for n in range(0,(len(A) + len(B)) - 1)]
 		for n in A:
-			c[j] = bin_mul(m,n,P,p)
-			C[j] = C[j]^c[j]
+			c[j] = bin_mul(B[len(B)-i-1],n,P,p)
 			j = j + 1
-		print(c)
-		i = i + 1
-	print(C)
+		C = add_sub(C,c,1)
 	return(C)
 
 def div(A, B, P, p): # POLYNOMIAL DIVISION
 	R_Temp = [n for n in A]
 	C = []
+	str_B = ""
+	for n in B:
+		str_B = str_B + " " + str(n)
 	while len(R_Temp) >= len(B):
 		for i in range (0,p):
 			if bin_mul(B[0],i,P,p) == R_Temp[0]:
 				C.append(i)
 				break
-		print(str(i) + " x " + str(B) + ":")
+		print(str(i) + " x " + str_B + ":")
 		C_Temp = [bin_mul(i,B[j],P,p) for j in range (0,len(B))]
 		while len(R_Temp) > len(C_Temp):
 			C_Temp.append(0)
-		R_Temp = add_sub(C_Temp,R_Temp,2)
+		R_Temp = add_sub(R_Temp,C_Temp,2)
 		R_Temp.pop(0)
 	return(C,R_Temp)
 
@@ -129,6 +132,13 @@ while (True):
 		i = i + 1
 	print("P in decimal: " + str(p))
 
+	str_A = ""
+	for n in A_x:
+		str_A = str_A + " " + str(n)
+	str_B = ""
+	for n in B_x:
+		str_B = str_B + " " + str(n)
+
 	while(1):
 		print("\n")
 		print("[1] Addition")
@@ -140,19 +150,23 @@ while (True):
 		choice = raw_input("Enter choice number: ")
 		print("\n")
 		if choice == "1":
-			print("Addition:")
+			print("Addition")
+			print(str_A + " +" + str_B + ":")
 			C = add_sub(A_x,B_x,1)
 			func = "A(x) + B(x) = "
 		elif choice == "2":
-			print("Subtraction:")
+			print("Subtraction")
+			print(str_A + " -" + str_B + ":")
 			C = add_sub(A_x,B_x,2)
 			func = "A(x) - B(x) = "
 		elif choice == "3":
-			print("Multiplication:")
+			print("Multiplication")
+			print(str_A + " x" + str_B + ":")
 			C = mul(A_x, B_x, P_x, p)
 			func = "A(x) * B(x) = "
 		elif choice == "4":
-			print("Division:")
+			print("Division")
+			print(str_A + " /" + str_B + ":")
 			C,r = div(A_x, B_x, P_x, p)
 			func = "A(x) / B(x) = "
 			rem = "Remainder:"
